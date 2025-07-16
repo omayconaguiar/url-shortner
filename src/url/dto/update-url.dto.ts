@@ -1,6 +1,6 @@
-import { PartialType, ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsBoolean } from 'class-validator';
-import { CreateUrlDto } from './create-url.dto';
+import {PartialType, ApiProperty} from '@nestjs/swagger';
+import {IsOptional, IsBoolean} from 'class-validator';
+import {CreateUrlDto} from './create-url.dto';
 
 export class UpdateUrlDto extends PartialType(CreateUrlDto) {
   @ApiProperty({

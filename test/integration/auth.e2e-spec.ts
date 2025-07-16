@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import {Test, TestingModule} from '@nestjs/testing';
+import {INestApplication} from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
-import { PrismaService } from '../../src/prisma/prisma.service';
+import {AppModule} from '../../src/app.module';
+import {PrismaService} from '../../src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 
 describe('Auth (e2e)', () => {
@@ -27,14 +27,14 @@ describe('Auth (e2e)', () => {
 
     // Clean up test data
     await prismaService.user.deleteMany({
-      where: { email: testUser.email },
+      where: {email: testUser.email},
     });
   });
 
   afterAll(async () => {
     // Clean up test data
     await prismaService.user.deleteMany({
-      where: { email: testUser.email },
+      where: {email: testUser.email},
     });
 
     await app.close();
@@ -60,7 +60,7 @@ describe('Auth (e2e)', () => {
 
       // Verify user was created in database
       const createdUser = await prismaService.user.findUnique({
-        where: { email: testUser.email },
+        where: {email: testUser.email},
       });
       expect(createdUser).toBeTruthy();
       expect(createdUser.email).toBe(testUser.email);
@@ -171,9 +171,7 @@ describe('Auth (e2e)', () => {
     });
 
     it('should return 401 without token', async () => {
-      await request(app.getHttpServer())
-        .get('/auth/profile')
-        .expect(401);
+      await request(app.getHttpServer()).get('/auth/profile').expect(401);
     });
 
     it('should return 401 with invalid token', async () => {

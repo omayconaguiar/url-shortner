@@ -1,6 +1,6 @@
-import { Controller, Get, Redirect } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ApiExcludeController } from '@nestjs/swagger';
+import {Controller, Get, Redirect} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {ApiExcludeController} from '@nestjs/swagger';
 
 @ApiExcludeController()
 @Controller()
@@ -14,6 +14,6 @@ export class AppController {
       this.configService.get<string>('ENABLE_SWAGGER') === 'true'
         ? '/api/swagger'
         : '/api/docs';
-    return { url: redirectUrl, statusCode: 302 };
+    return {url: redirectUrl, statusCode: 302};
   }
 }

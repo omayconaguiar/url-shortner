@@ -1,6 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UrlService } from '../../../src/url/url.service';
-import { PrismaService } from '../../../src/prisma/prisma.service';
+import {Test, TestingModule} from '@nestjs/testing';
+import {UrlService} from '../../../src/url/url.service';
+import {PrismaService} from '../../../src/prisma/prisma.service';
 import {
   NotFoundException,
   ConflictException,
@@ -80,7 +80,7 @@ describe('UrlService', () => {
       const result = await service.create(createUrlDto, 'user-1');
 
       expect(mockPrismaService.url.findUnique).toHaveBeenCalledWith({
-        where: { slug: createUrlDto.customSlug },
+        where: {slug: createUrlDto.customSlug},
       });
       expect(mockPrismaService.url.create).toHaveBeenCalledWith({
         data: {
@@ -113,7 +113,7 @@ describe('UrlService', () => {
 
       // Mock that slug check returns null (slug available)
       mockPrismaService.url.findUnique.mockResolvedValue(null);
-      
+
       // Mock the created URL with a generated slug
       const mockCreatedUrl = {
         ...mockUrl,
@@ -139,9 +139,9 @@ describe('UrlService', () => {
     it('should throw ConflictException if slug already exists', async () => {
       mockPrismaService.url.findUnique.mockResolvedValue(mockUrl);
 
-      await expect(
-        service.create(createUrlDto, 'user-1'),
-      ).rejects.toThrow(ConflictException);
+      await expect(service.create(createUrlDto, 'user-1')).rejects.toThrow(
+        ConflictException,
+      );
       expect(mockPrismaService.url.create).not.toHaveBeenCalled();
     });
 
@@ -150,9 +150,9 @@ describe('UrlService', () => {
         originalUrl: 'http://localhost:3000/abc123',
       };
 
-      await expect(
-        service.create(createUrlDtoShort, 'user-1'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.create(createUrlDtoShort, 'user-1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -193,7 +193,7 @@ describe('UrlService', () => {
       const result = await service.findAll('user-1');
 
       expect(mockPrismaService.url.findMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
+        where: {userId: 'user-1'},
         include: expect.any(Object),
         orderBy: {
           createdAt: 'desc',
@@ -210,7 +210,7 @@ describe('UrlService', () => {
       const result = await service.findBySlug('abc123');
 
       expect(mockPrismaService.url.findUnique).toHaveBeenCalledWith({
-        where: { slug: 'abc123' },
+        where: {slug: 'abc123'},
         include: {
           user: {
             select: {
@@ -288,7 +288,7 @@ describe('UrlService', () => {
       const result = await service.update('url-1', updateUrlDto, 'user-1');
 
       expect(mockPrismaService.url.update).toHaveBeenCalledWith({
-        where: { id: 'url-1' },
+        where: {id: 'url-1'},
         data: {
           originalUrl: updateUrlDto.originalUrl,
           slug: updateUrlDto.customSlug,
@@ -296,7 +296,7 @@ describe('UrlService', () => {
         },
         include: expect.any(Object),
       });
-      expect(result).toEqual({ ...mockUrl, ...updateUrlDto });
+      expect(result).toEqual({...mockUrl, ...updateUrlDto});
     });
 
     it('should throw NotFoundException when URL not found', async () => {
@@ -324,7 +324,7 @@ describe('UrlService', () => {
       const result = await service.remove('url-1', 'user-1');
 
       expect(mockPrismaService.url.delete).toHaveBeenCalledWith({
-        where: { id: 'url-1' },
+        where: {id: 'url-1'},
       });
       expect(result).toEqual({
         message: 'URL deleted successfully',
@@ -360,8 +360,8 @@ describe('UrlService', () => {
     it('should return URL statistics', async () => {
       const mockUrlWithVisits = {
         ...mockUrl,
-        visits: [{ createdAt: new Date() }],
-        _count: { visits: 5 },
+        visits: [{createdAt: new Date()}],
+        _count: {visits: 5},
       };
 
       mockPrismaService.url.findUnique.mockResolvedValue(mockUrlWithVisits);
@@ -389,8 +389,8 @@ describe('UrlService', () => {
   describe('getDashboardStats', () => {
     it('should return dashboard statistics', async () => {
       const mockUrls = [
-        { ...mockUrl, _count: { visits: 10 } },
-        { ...mockUrl, id: 'url-2', _count: { visits: 5 } },
+        {...mockUrl, _count: {visits: 10}},
+        {...mockUrl, id: 'url-2', _count: {visits: 5}},
       ];
 
       mockPrismaService.url.findMany.mockResolvedValue(mockUrls);

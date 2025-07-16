@@ -1,9 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL || 'postgresql://urlshortener:password@localhost:5432/url_shortener_test?schema=public',
+      url:
+        process.env.DATABASE_URL ||
+        'postgresql://urlshortener:password@localhost:5432/url_shortener_test?schema=public',
     },
   },
 });

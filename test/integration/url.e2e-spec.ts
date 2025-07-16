@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import {Test, TestingModule} from '@nestjs/testing';
+import {INestApplication} from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
-import { PrismaService } from '../../src/prisma/prisma.service';
+import {AppModule} from '../../src/app.module';
+import {PrismaService} from '../../src/prisma/prisma.service';
 
 describe('URL (e2e)', () => {
   let app: INestApplication;
@@ -34,10 +34,10 @@ describe('URL (e2e)', () => {
 
     // Clean up test data
     await prismaService.url.deleteMany({
-      where: { slug: { startsWith: 'test' } },
+      where: {slug: {startsWith: 'test'}},
     });
     await prismaService.user.deleteMany({
-      where: { email: testUser.email },
+      where: {email: testUser.email},
     });
 
     // Create test user and get auth token
@@ -52,10 +52,10 @@ describe('URL (e2e)', () => {
   afterAll(async () => {
     // Clean up test data
     await prismaService.url.deleteMany({
-      where: { slug: { startsWith: 'test' } },
+      where: {slug: {startsWith: 'test'}},
     });
     await prismaService.user.deleteMany({
-      where: { email: testUser.email },
+      where: {email: testUser.email},
     });
 
     await app.close();
@@ -188,9 +188,7 @@ describe('URL (e2e)', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      await request(app.getHttpServer())
-        .get('/urls')
-        .expect(401);
+      await request(app.getHttpServer()).get('/urls').expect(401);
     });
   });
 
@@ -224,9 +222,7 @@ describe('URL (e2e)', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      await request(app.getHttpServer())
-        .get('/urls/dashboard')
-        .expect(401);
+      await request(app.getHttpServer()).get('/urls/dashboard').expect(401);
     });
   });
 
@@ -292,8 +288,8 @@ describe('URL (e2e)', () => {
 
       // Check that visit was recorded in database
       const url = await prismaService.url.findUnique({
-        where: { slug: testUrl.customSlug },
-        include: { visits: true },
+        where: {slug: testUrl.customSlug},
+        include: {visits: true},
       });
 
       expect(url?.visits.length).toBeGreaterThan(0);
@@ -306,9 +302,7 @@ describe('URL (e2e)', () => {
     });
 
     it('should return 404 for non-existent slug', async () => {
-      await request(app.getHttpServer())
-        .get('/nonexistent')
-        .expect(404);
+      await request(app.getHttpServer()).get('/nonexistent').expect(404);
     });
 
     it('should return 404 for inactive URL', async () => {
@@ -327,7 +321,7 @@ describe('URL (e2e)', () => {
         .expect(404);
 
       // Cleanup
-      await prismaService.url.delete({ where: { id: inactiveUrl.id } });
+      await prismaService.url.delete({where: {id: inactiveUrl.id}});
     });
   });
 
@@ -376,7 +370,7 @@ describe('URL (e2e)', () => {
       await request(app.getHttpServer())
         .patch(`/urls/${createdUrlId}`)
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ customSlug: 'another123' })
+        .send({customSlug: 'another123'})
         .expect(409);
     });
 
@@ -384,14 +378,14 @@ describe('URL (e2e)', () => {
       await request(app.getHttpServer())
         .patch('/urls/nonexistent')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ isActive: false })
+        .send({isActive: false})
         .expect(404);
     });
 
     it('should return 401 when not authenticated', async () => {
       await request(app.getHttpServer())
         .patch(`/urls/${createdUrlId}`)
-        .send({ isActive: false })
+        .send({isActive: false})
         .expect(401);
     });
 
@@ -412,12 +406,12 @@ describe('URL (e2e)', () => {
       await request(app.getHttpServer())
         .patch(`/urls/${createdUrlId}`)
         .set('Authorization', `Bearer ${anotherToken}`)
-        .send({ isActive: false })
+        .send({isActive: false})
         .expect(403);
 
       // Cleanup
       await prismaService.user.delete({
-        where: { id: anotherUserResponse.body.user.id },
+        where: {id: anotherUserResponse.body.user.id},
       });
     });
   });
@@ -472,69 +466,57 @@ describe('URL (e2e)', () => {
 
       // Cleanup
       await prismaService.user.delete({
-        where: { id: anotherUserResponse.body.user.id },
+        where: {id: anotherUserResponse.body.user.id},
       });
     });
 
     it('should delete URL when user is owner', async () => {
-        const url = await prismaService.url.findUnique({
-          where: { id: urlToDelete },
-        });
-        expect(url).toBeTruthy(); 
-      
-        const urlSlug = url!.slug;
-      
-        await request(app.getHttpServer())
-          .delete(`/urls/${urlToDelete}`)
-          .set('Authorization', `Bearer ${authToken}`)
-          .expect(204);
-      
-        
-        await request(app.getHttpServer())
-          .get(`/${urlSlug}`)
-          .expect(404);
+      const url = await prismaService.url.findUnique({
+        where: {id: urlToDelete},
       });
-      
-      it('should delete URL and cascade delete visits', async () => {
-        const url = await prismaService.url.findUnique({
-          where: { id: urlToDelete },
-        });
-        expect(url).toBeTruthy();
-      
-        const urlSlug = url!.slug;
-      
-        
-        await request(app.getHttpServer())
-          .get(`/${urlSlug}`)
-          .expect(302); 
-      
-        
-        const visitsBeforeDelete = await prismaService.visit.count({
-          where: { urlId: urlToDelete },
-        });
-        expect(visitsBeforeDelete).toBeGreaterThan(0);
-      
-        
-        await request(app.getHttpServer())
-          .delete(`/urls/${urlToDelete}`)
-          .set('Authorization', `Bearer ${authToken}`)
-          .expect(204);
-      
-        
-        const visitsAfterDelete = await prismaService.visit.count({
-          where: { urlId: urlToDelete },
-        });
-        expect(visitsAfterDelete).toBe(0);
+      expect(url).toBeTruthy();
+
+      const urlSlug = url!.slug;
+
+      await request(app.getHttpServer())
+        .delete(`/urls/${urlToDelete}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(204);
+
+      await request(app.getHttpServer()).get(`/${urlSlug}`).expect(404);
+    });
+
+    it('should delete URL and cascade delete visits', async () => {
+      const url = await prismaService.url.findUnique({
+        where: {id: urlToDelete},
       });
-      
+      expect(url).toBeTruthy();
+
+      const urlSlug = url!.slug;
+
+      await request(app.getHttpServer()).get(`/${urlSlug}`).expect(302);
+
+      const visitsBeforeDelete = await prismaService.visit.count({
+        where: {urlId: urlToDelete},
+      });
+      expect(visitsBeforeDelete).toBeGreaterThan(0);
+
+      await request(app.getHttpServer())
+        .delete(`/urls/${urlToDelete}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(204);
+
+      const visitsAfterDelete = await prismaService.visit.count({
+        where: {urlId: urlToDelete},
+      });
+      expect(visitsAfterDelete).toBe(0);
+    });
   });
 
   describe('Edge Cases', () => {
     it('should handle multiple concurrent redirects', async () => {
-      const promises = Array.from({ length: 10 }, () =>
-        request(app.getHttpServer())
-          .get(`/${testUrl.customSlug}`)
-          .expect(302),
+      const promises = Array.from({length: 10}, () =>
+        request(app.getHttpServer()).get(`/${testUrl.customSlug}`).expect(302),
       );
 
       const responses = await Promise.all(promises);
@@ -572,7 +554,8 @@ describe('URL (e2e)', () => {
     });
 
     it('should handle URLs with special characters', async () => {
-      const urlWithSpecialChars = 'https://example.com/path?q=test&lang=pt-BR&special=@#$%';
+      const urlWithSpecialChars =
+        'https://example.com/path?q=test&lang=pt-BR&special=@#$%';
 
       const response = await request(app.getHttpServer())
         .post('/urls')

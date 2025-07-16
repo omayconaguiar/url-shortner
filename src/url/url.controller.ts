@@ -22,12 +22,12 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from '@nestjs/swagger';
-import { Request, Response } from 'express';
-import { UrlService } from './url.service';
-import { CreateUrlDto } from './dto/create-url.dto';
-import { UpdateUrlDto } from './dto/update-url.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { OptionalAuthGuard } from '../auth/guards/optional-auth.guard'; 
+import {Request, Response} from 'express';
+import {UrlService} from './url.service';
+import {CreateUrlDto} from './dto/create-url.dto';
+import {UpdateUrlDto} from './dto/update-url.dto';
+import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
+import {OptionalAuthGuard} from '../auth/guards/optional-auth.guard';
 
 @ApiTags('URLs')
 @Controller()
@@ -36,8 +36,8 @@ export class UrlController {
 
   @Post('urls')
   @UseGuards(OptionalAuthGuard)
-  @ApiOperation({ summary: 'Create a new shortened URL' })
-  @ApiBody({ description: 'URL data to create', type: CreateUrlDto })
+  @ApiOperation({summary: 'Create a new shortened URL'})
+  @ApiBody({description: 'URL data to create', type: CreateUrlDto})
   @ApiResponse({
     status: 201,
     description: 'URL created successfully',
@@ -50,21 +50,23 @@ export class UrlController {
         createdAt: '2024-01-15T10:30:00Z',
         updatedAt: '2024-01-15T10:30:00Z',
         isActive: true,
-        _count: { visits: 0 },
+        _count: {visits: 0},
       },
     },
   })
-  @ApiResponse({ status: 400, description: 'Bad request - invalid URL or slug already taken' })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - invalid URL or slug already taken',
+  })
   create(@Body() createUrlDto: CreateUrlDto, @Req() req) {
     const userId = req.user?.id;
     return this.urlService.create(createUrlDto, userId);
   }
-  
 
   @Get('urls')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all URLs for authenticated user' })
+  @ApiOperation({summary: 'Get all URLs for authenticated user'})
   @ApiResponse({
     status: 200,
     description: 'Returns array of URLs',
@@ -76,7 +78,7 @@ export class UrlController {
   @Get('urls/dashboard')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get dashboard statistics for authenticated user' })
+  @ApiOperation({summary: 'Get dashboard statistics for authenticated user'})
   @ApiResponse({
     status: 200,
     description: 'Returns dashboard statistics',
@@ -100,7 +102,7 @@ export class UrlController {
   }
 
   @Get('urls/all')
-  @ApiOperation({ summary: 'Get all URLs (public endpoint)' })
+  @ApiOperation({summary: 'Get all URLs (public endpoint)'})
   @ApiResponse({
     status: 200,
     description: 'Returns array of all URLs',
@@ -110,7 +112,7 @@ export class UrlController {
   }
 
   @Get('urls/:id/stats')
-  @ApiOperation({ summary: 'Get statistics for a specific URL' })
+  @ApiOperation({summary: 'Get statistics for a specific URL'})
   @ApiParam({
     name: 'id',
     description: 'URL slug',
@@ -139,7 +141,7 @@ export class UrlController {
   }
 
   @Patch('urls/:id')
-  @ApiOperation({ summary: 'Update a URL' })
+  @ApiOperation({summary: 'Update a URL'})
   @ApiParam({
     name: 'id',
     description: 'URL ID',
@@ -161,14 +163,18 @@ export class UrlController {
     status: 403,
     description: 'You can only update your own URLs',
   })
-  update(@Param('id') id: string, @Body() updateUrlDto: UpdateUrlDto, @Req() req) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUrlDto: UpdateUrlDto,
+    @Req() req,
+  ) {
     const userId = req.user?.id;
     return this.urlService.update(id, updateUrlDto, userId);
   }
 
   @Delete('urls/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a URL' })
+  @ApiOperation({summary: 'Delete a URL'})
   @ApiParam({
     name: 'id',
     description: 'URL ID',
@@ -192,7 +198,7 @@ export class UrlController {
   }
 
   @Get(':slug')
-  @ApiOperation({ summary: 'Redirect to original URL' })
+  @ApiOperation({summary: 'Redirect to original URL'})
   @ApiParam({
     name: 'slug',
     description: 'URL slug',
@@ -206,7 +212,11 @@ export class UrlController {
     status: 404,
     description: 'URL not found or inactive',
   })
-  async redirect(@Param('slug') slug: string, @Req() req, @Res() res: Response) {
+  async redirect(
+    @Param('slug') slug: string,
+    @Req() req,
+    @Res() res: Response,
+  ) {
     const visitData = {
       ipAddress: req.ip,
       userAgent: req.get('User-Agent'),

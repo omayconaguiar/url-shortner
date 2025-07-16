@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UrlController } from '../../../src/url/url.controller';
-import { UrlService } from '../../../src/url/url.service';
-import { Response } from 'express';
+import {Test, TestingModule} from '@nestjs/testing';
+import {UrlController} from '../../../src/url/url.controller';
+import {UrlService} from '../../../src/url/url.service';
+import {Response} from 'express';
 
 describe('UrlController', () => {
   let controller: UrlController;
@@ -95,10 +95,13 @@ describe('UrlController', () => {
     });
 
     it('should create URL without user when not authenticated', async () => {
-      const mockRequestNoUser = { user: undefined };
-      mockUrlService.create.mockResolvedValue({ ...mockUrl, userId: null });
+      const mockRequestNoUser = {user: undefined};
+      mockUrlService.create.mockResolvedValue({...mockUrl, userId: null});
 
-      const result = await controller.create(createUrlDto, mockRequestNoUser as any);
+      const result = await controller.create(
+        createUrlDto,
+        mockRequestNoUser as any,
+      );
 
       expect(mockUrlService.create).toHaveBeenCalledWith(
         createUrlDto,
@@ -178,10 +181,14 @@ describe('UrlController', () => {
     };
 
     it('should update URL successfully', async () => {
-      const updatedUrl = { ...mockUrl, ...updateUrlDto };
+      const updatedUrl = {...mockUrl, ...updateUrlDto};
       mockUrlService.update.mockResolvedValue(updatedUrl);
 
-      const result = await controller.update('url-1', updateUrlDto, mockRequest as any);
+      const result = await controller.update(
+        'url-1',
+        updateUrlDto,
+        mockRequest as any,
+      );
 
       expect(mockUrlService.update).toHaveBeenCalledWith(
         'url-1',
@@ -194,7 +201,7 @@ describe('UrlController', () => {
 
   describe('remove', () => {
     it('should delete URL successfully', async () => {
-      const deleteResponse = { message: 'URL deleted successfully' };
+      const deleteResponse = {message: 'URL deleted successfully'};
       mockUrlService.remove.mockResolvedValue(deleteResponse);
 
       const result = await controller.remove('url-1', mockRequest as any);
@@ -218,13 +225,20 @@ describe('UrlController', () => {
         userAgent: 'Mozilla/5.0...',
         referer: 'https://google.com',
       });
-      expect(mockResponse.redirect).toHaveBeenCalledWith(302, 'https://example.com');
+      expect(mockResponse.redirect).toHaveBeenCalledWith(
+        302,
+        'https://example.com',
+      );
     });
 
     it('should return 404 when URL not found', async () => {
       mockUrlService.redirect.mockRejectedValue(new Error('URL not found'));
 
-      await controller.redirect('nonexistent', mockRequest as any, mockResponse);
+      await controller.redirect(
+        'nonexistent',
+        mockRequest as any,
+        mockResponse,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({

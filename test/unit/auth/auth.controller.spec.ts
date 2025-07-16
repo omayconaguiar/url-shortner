@@ -1,6 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from '../../../src/auth/auth.controller';
-import { AuthService } from '../../../src/auth/auth.service';
+import {Test, TestingModule} from '@nestjs/testing';
+import {AuthController} from '../../../src/auth/auth.controller';
+import {AuthService} from '../../../src/auth/auth.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -97,7 +97,9 @@ describe('AuthController', () => {
 
       const result = await controller.getProfile(mockRequest as any);
 
-      expect(mockAuthService.getProfile).toHaveBeenCalledWith(mockRequest.user.id);
+      expect(mockAuthService.getProfile).toHaveBeenCalledWith(
+        mockRequest.user.id,
+      );
       expect(result).toEqual(userProfile);
     });
   });

@@ -1,9 +1,13 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
+import {JwtService} from '@nestjs/jwt';
+import {PrismaService} from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import {LoginDto} from './dto/login.dto';
+import {RegisterDto} from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,10 +17,10 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, password, name } = registerDto;
+    const {email, password, name} = registerDto;
 
     const existingUser = await this.prisma.user.findUnique({
-      where: { email },
+      where: {email},
     });
 
     if (existingUser) {
@@ -40,7 +44,7 @@ export class AuthService {
       },
     });
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = {sub: user.id, email: user.email};
     const token = this.jwtService.sign(payload);
 
     return {
@@ -50,10 +54,10 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+    const {email, password} = loginDto;
 
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: {email},
     });
 
     if (!user) {
@@ -66,7 +70,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = {sub: user.id, email: user.email};
     const token = this.jwtService.sign(payload);
 
     return {
@@ -83,7 +87,7 @@ export class AuthService {
 
   async getProfile(userId: string) {
     return this.prisma.user.findUnique({
-      where: { id: userId },
+      where: {id: userId},
       select: {
         id: true,
         email: true,

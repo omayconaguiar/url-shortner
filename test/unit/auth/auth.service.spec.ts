@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../../../src/auth/auth.service';
-import { PrismaService } from '../../../src/prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException, ConflictException } from '@nestjs/common';
+import {Test, TestingModule} from '@nestjs/testing';
+import {AuthService} from '../../../src/auth/auth.service';
+import {PrismaService} from '../../../src/prisma/prisma.service';
+import {JwtService} from '@nestjs/jwt';
+import {UnauthorizedException, ConflictException} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 jest.mock('bcrypt');
@@ -75,7 +75,7 @@ describe('AuthService', () => {
       const result = await service.register(registerDto);
 
       expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
-        where: { email: registerDto.email },
+        where: {email: registerDto.email},
       });
       expect(bcrypt.hash).toHaveBeenCalledWith(registerDto.password, 10);
       expect(mockPrismaService.user.create).toHaveBeenCalledWith({
@@ -129,7 +129,7 @@ describe('AuthService', () => {
       const result = await service.login(loginDto);
 
       expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
-        where: { email: loginDto.email },
+        where: {email: loginDto.email},
       });
       expect(bcrypt.compare).toHaveBeenCalledWith(
         loginDto.password,
@@ -184,7 +184,7 @@ describe('AuthService', () => {
       const result = await service.getProfile(mockUser.id);
 
       expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
-        where: { id: mockUser.id },
+        where: {id: mockUser.id},
         select: {
           id: true,
           email: true,

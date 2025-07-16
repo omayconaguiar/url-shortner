@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
+import {Controller, Post, Body, Get, UseGuards, Req} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -6,10 +6,10 @@ import {
   ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import {AuthService} from './auth.service';
+import {LoginDto} from './dto/login.dto';
+import {RegisterDto} from './dto/register.dto';
+import {JwtAuthGuard} from './guards/jwt-auth.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -17,7 +17,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
+  @ApiOperation({summary: 'Register a new user'})
   @ApiBody({
     description: 'User registration data',
     type: RegisterDto,
@@ -47,7 +47,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @ApiOperation({ summary: 'Login user' })
+  @ApiOperation({summary: 'Login user'})
   @ApiBody({
     description: 'User login credentials',
     type: LoginDto,
@@ -79,7 +79,7 @@ export class AuthController {
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiOperation({summary: 'Get current user profile'})
   @ApiResponse({
     status: 200,
     description: 'Returns current user profile',
