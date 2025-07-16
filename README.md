@@ -2,12 +2,16 @@
 
 A robust URL shortening service backend built with NestJS, TypeScript, PostgreSQL, and Prisma ORM. Features user authentication, analytics, custom slugs, and comprehensive API documentation.
 
+## 🛠️ Architecture Overview
+
+The system is composed of a frontend and backend application that communicate via REST APIs to handle URL shortening, user authentication, analytics tracking, and dashboard visualization.
+
 ### 📌 Architecture Diagram (Mermaid)
 
 You can view the complete architecture on MermaidChart:  
 🔗 [Open Diagram in MermaidChart](https://www.mermaidchart.com/app/projects/3284de2d-a15f-4a31-b75b-ce6bb1435a1a/diagrams/c0c1ccbc-8842-4905-9b7a-6000d5ae2fd5/version/v0.1/edit)
 
-![Architecture Diagram](https://github.com/user-attachments/assets/2d7f52bf-c04c-42be-9057-b8ed9fd070c3)
+![Architecture Diagram](https://github.com/user-attachments/assets/b86ccd5d-78f8-4324-9d9b-d3ee100dbddd)
 
 ## 📚 API Documentation
 
@@ -15,7 +19,7 @@ All available endpoints and schemas are documented using Swagger (OpenAPI).
 
 You can explore the API via Swagger UI:
 
-![Swagger Screenshot](https://github.com/user-attachments/assets/e7f01972-6c4e-4cd5-aa46-e229b1b9d09b)
+![Swagger Screenshot](https://github.com/user-attachments/assets/82b5842b-cd3c-4eff-906b-b5bad82006d9)
 
 ## 🎯 Challenge Implementation
 
