@@ -1,7 +1,15 @@
 # URL Shortener Frontend
 
-A modern, responsive URL shortener frontend built with Next.js 15, React 19, TypeScript, and Tailwind CSS.
-<img width="1918" height="907" alt="image" src="https://github.com/user-attachments/assets/7cb77e91-8c19-4959-a497-93d1ac41632c" />
+A modern, responsive URL shortener frontend built with:
+
+- **Next.js 15**
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS**
+
+It provides a smooth and intuitive UI for creating and managing shortened links, authenticating users, and visualizing analytics in real time.
+
+![App Screenshot](https://github.com/user-attachments/assets/e7e797f0-7128-4643-b768-4712fc740fc8)
 
 ## Features
 
