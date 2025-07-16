@@ -58,7 +58,7 @@ import {
         data: {
           originalUrl,
           slug,
-          userId,
+          userId: userId,
         },
         include: {
           user: userId ? {

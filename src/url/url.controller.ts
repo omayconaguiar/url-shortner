@@ -27,7 +27,7 @@ import { UrlService } from './url.service';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
+import { OptionalAuthGuard } from '../auth/guards/optional-auth.guard'; 
 
 @ApiTags('URLs')
 @Controller()
@@ -35,7 +35,7 @@ export class UrlController {
   constructor(private readonly urlService: UrlService) {}
 
   @Post('urls')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(OptionalAuthGuard)
   @ApiOperation({ summary: 'Create a new shortened URL' })
   @ApiBody({ description: 'URL data to create', type: CreateUrlDto })
   @ApiResponse({
