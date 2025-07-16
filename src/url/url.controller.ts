@@ -141,6 +141,7 @@ export class UrlController {
   }
 
   @Patch('urls/:id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({summary: 'Update a URL'})
   @ApiParam({
     name: 'id',

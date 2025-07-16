@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useUrls } from '@/common/hooks/url/useUrls';
+import { useUpdateUrl } from '@/common/hooks/url/useUpdateUrl';
 import { Url } from '@/common/models/url';
 
 interface UrlListProps {
@@ -9,7 +10,60 @@ interface UrlListProps {
 
 export default function UrlList({ userOnly = false }: UrlListProps) {
   const { urls, loading, error, refreshUrls } = useUrls(userOnly);
+  const { updateUrl, loading: isUpdating } = useUpdateUrl();
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  const [editSlugValue, setEditSlugValue] = useState('');
+  const [editError, setEditError] = useState<string | null>(null);
+
+  const handleEditSlug = (url: Url) => {
+    setEditingSlug(url.id);
+    setEditSlugValue(url.slug);
+    setEditError(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSlug(null);
+    setEditSlugValue('');
+    setEditError(null);
+  };
+
+  const handleSaveSlug = async (urlId: string) => {
+    if (!editSlugValue.trim()) {
+      setEditError('Slug cannot be empty');
+      return;
+    }
+
+    // Validate slug format
+    if (!/^[a-zA-Z0-9_-]+$/.test(editSlugValue)) {
+      setEditError('Slug can only contain letters, numbers, hyphens, and underscores');
+      return;
+    }
+
+    if (editSlugValue.length < 3 || editSlugValue.length > 50) {
+      setEditError('Slug must be between 3 and 50 characters');
+      return;
+    }
+
+    setEditError(null);
+
+    try {
+      await updateUrl(urlId, { customSlug: editSlugValue });
+      setEditingSlug(null);
+      setEditSlugValue('');
+      refreshUrls(); // Refresh the list
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('already taken')) {
+          setEditError('This slug is already taken. Please choose another one.');
+        } else {
+          setEditError(error.message);
+        }
+      } else {
+        setEditError('Failed to update slug');
+      }
+    }
+  };
 
   const copyToClipboard = async (slug: string) => {
     try {
@@ -50,7 +104,7 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
       } catch (fallbackErr) {
         console.error('Fallback copy also failed: ', fallbackErr);
         const shortUrl = `http://${process.env.NEXT_PUBLIC_APP_DOMAIN}/${slug}`;
-        alert(`Copy failed. Please copy manually: ${shortUrl}`);
+        // alert(`Copy failed. Please copy manually: ${shortUrl}`);
       }
     }
   };
@@ -132,13 +186,53 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
                         {url._count.visits} visits
                       </span>
                     </div>
-                    <p className="text-gray-600 text-sm truncate">
-                      {url.originalUrl}
-                    </p>
-                    <p className="text-gray-400 text-xs mt-1">
-                      Created {new Date(url.createdAt).toLocaleDateString()} at{' '}
-                      {new Date(url.createdAt).toLocaleTimeString()}
-                    </p>
+
+                    {editingSlug === url.id ? (
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-gray-500">
+                            {process.env.NEXT_PUBLIC_APP_DOMAIN}/
+                          </span>
+                          <input
+                            type="text"
+                            value={editSlugValue}
+                            onChange={(e) => setEditSlugValue(e.target.value)}
+                            className="flex-1 px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            placeholder="Enter new slug"
+                            disabled={isUpdating}
+                          />
+                        </div>
+                        {editError && (
+                          <p className="text-sm text-red-600">{editError}</p>
+                        )}
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleSaveSlug(url.id)}
+                            disabled={isUpdating}
+                            className="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
+                          >
+                            {isUpdating ? 'Saving...' : 'Save'}
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            disabled={isUpdating}
+                            className="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-400 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-gray-600 text-sm truncate">
+                          {url.originalUrl}
+                        </p>
+                        <p className="text-gray-400 text-xs mt-1">
+                          Created {new Date(url.createdAt).toLocaleDateString()} at{' '}
+                          {new Date(url.createdAt).toLocaleTimeString()}
+                        </p>
+                      </>
+                    )}
                   </div>
                   
                   <div className="flex items-center space-x-2 ml-4">
@@ -152,6 +246,16 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
                     >
                       {copiedSlug === url.slug ? '✓ Copied!' : '📋 Copy'}
                     </button>
+                    
+                    {editingSlug === url.id ? null : (
+                      <button
+                        onClick={() => handleEditSlug(url)}
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
+                        title="Edit slug"
+                      >
+                        ✏️ Edit
+                      </button>
+                    )}
                     
                     <a
                       href={url.originalUrl}
