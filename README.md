@@ -7,9 +7,8 @@ A robust URL shortening service backend built with NestJS, TypeScript, PostgreSQ
 The system is composed of a frontend and backend application that communicate via REST APIs to handle URL shortening, user authentication, analytics tracking, and dashboard visualization.
 
 ## 🎥 Demo Video
-
 Watch a quick demonstration of the URL Shortener in action:  
-🔗 [Click to watch on OneDrive](https://1drv.ms/v/c/61bdaae821ff3a5b/EViYio9dqSJCqVeg_TdwN-cBLRwkVQFGfJ0smO3bBxe30Q?e=MdRk4B)
+🔗 [Click to watch on OneDrive](https://1drv.ms/v/c/61bdaae821ff3a5b/EViYio9dqSJCqVeg_TdwN-cBLRwkVQFGfJ0smO3bBxe30Q?e=NJwgC6&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D)
 
 ### 📌 Architecture Diagram (Mermaid)
 
