@@ -9,8 +9,7 @@ The system is composed of a frontend and backend application that communicate vi
 ## 🎥 Demo Video
 
 Watch a quick demonstration of the URL Shortener in action:  
-🔗 [Click to watch on OneDrive](https://1drv.ms/v/c/61bdaae821ff3a5b/EaXdD2kOMjxEputhRf4spJ0BnirrRS3sVkQpvSvqx-sFfA?e=8KtEyG)
-
+🔗 [Click to watch on OneDrive](https://1drv.ms/v/c/61bdaae821ff3a5b/EViYio9dqSJCqVeg_TdwN-cBLRwkVQFGfJ0smO3bBxe30Q?e=TTKOO9)
 
 ### 📌 Architecture Diagram (Mermaid)
 
