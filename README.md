@@ -8,7 +8,7 @@ The system is composed of a frontend and backend application that communicate vi
 
 ## 🎥 Demo Video
 Watch a quick demonstration of the URL Shortener in action:  
-🔗 [Click to watch on OneDrive]([https://1drv.ms/v/c/61bdaae821ff3a5b/EViYio9dqSJCqVeg_TdwN-cBLRwkVQFGfJ0smO3bBxe30Q?e=NJwgC6&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D](https://1drv.ms/v/c/61bdaae821ff3a5b/EViYio9dqSJCqVeg_TdwN-cBLRwkVQFGfJ0smO3bBxe30Q?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&e=eUSeac))
+🔗 https://1drv.ms/v/c/61bdaae821ff3a5b/EViYio9dqSJCqVeg_TdwN-cBLRwkVQFGfJ0smO3bBxe30Q?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&e=eUSeac
 
 ### 📌 Architecture Diagram (Mermaid)
 
