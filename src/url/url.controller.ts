@@ -226,7 +226,11 @@ export class UrlController {
 
     try {
       const originalUrl = await this.urlService.redirect(slug, visitData);
-      return res.redirect(302, originalUrl);
+      return res.status(200).json({
+        originalUrl: originalUrl,
+        success: true,
+        status: 200
+      });
     } catch (error) {
       return res.status(404).json({
         statusCode: 404,

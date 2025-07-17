@@ -1,54 +1,51 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useCheckUrl } from '@/common/hooks/url/useCheckUrl';
 
 interface RedirectPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default function RedirectPage({ params }: RedirectPageProps) {
   const [showNotFound, setShowNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [slug, setSlug] = useState<string>('');
+  const { checkUrl } = useCheckUrl();
 
   useEffect(() => {
-    const checkAndRedirect = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${params.slug}`);
+    const resolveParams = async () => {
+      const resolvedParams = await params;
+      setSlug(resolvedParams.slug);
+    };
+    
+    resolveParams();
+  }, [params]);
 
-        if (response.ok) {
-          // Success - URL exists, do the redirect
-          window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/${params.slug}`;
-        } else if (response.status === 404) {
-          // Get the JSON response to check if it matches our expected format
-          const errorData = await response.json();
-          
-          if (errorData.statusCode === 404 && 
-              errorData.message === 'URL not found' && 
-              errorData.error === 'Not Found') {
-            // This is our expected 404 response - show beautiful page
-            setLoading(false);
-            setShowNotFound(true);
-          } else {
-            // Different 404 format - also show not found
-            setLoading(false);
-            setShowNotFound(true);
-          }
-        } else {
-          // Other status codes - treat as not found
+  useEffect(() => {
+    if (!slug) return;
+
+    const handleRedirect = async () => {
+      try {
+        const result = await checkUrl(slug);        
+
+        if (result.exists && result.shouldRedirect && result.originalUrl) {          
+          window.location.href = result.originalUrl;
+        } else {          
           setLoading(false);
           setShowNotFound(true);
         }
       } catch (error) {
-        console.error('Network error:', error);
+        console.error('Error checking URL:', error);
         setLoading(false);
         setShowNotFound(true);
       }
     };
 
-    checkAndRedirect();
-  }, [params.slug]);
+    handleRedirect();
+  }, [slug, checkUrl]);
 
   if (showNotFound) {
     return (
@@ -62,7 +59,7 @@ export default function RedirectPage({ params }: RedirectPageProps) {
             <p className="text-gray-600 mb-6 leading-relaxed">
               The short URL 
               <span className="inline-block mx-2 px-3 py-1 bg-red-100 text-red-700 rounded-lg font-mono text-sm font-semibold">
-                /{params.slug}
+                /{slug}
               </span>
               could not be found or may have expired.
             </p>

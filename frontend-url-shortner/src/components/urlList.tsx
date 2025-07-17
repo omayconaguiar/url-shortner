@@ -69,11 +69,9 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
     try {
       const shortUrl = `http://${process.env.NEXT_PUBLIC_APP_DOMAIN}/${slug}`;
       
-      // Check if clipboard API is available
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(shortUrl);
       } else {
-        // Fallback for older browsers or non-secure contexts
         const textArea = document.createElement('textarea');
         textArea.value = shortUrl;
         textArea.style.position = 'fixed';
@@ -90,22 +88,8 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
       setTimeout(() => setCopiedSlug(null), 2000);
     } catch (err) {
       console.error('Failed to copy text: ', err);
-      // Try fallback method even if clipboard API failed
-      try {
-        const shortUrl = `http://${process.env.NEXT_PUBLIC_APP_DOMAIN}/${slug}`;
-        const textArea = document.createElement('textarea');
-        textArea.value = shortUrl;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        setCopiedSlug(slug);
-        setTimeout(() => setCopiedSlug(null), 2000);
-      } catch (fallbackErr) {
-        console.error('Fallback copy also failed: ', fallbackErr);
-        const shortUrl = `http://${process.env.NEXT_PUBLIC_APP_DOMAIN}/${slug}`;
-        // alert(`Copy failed. Please copy manually: ${shortUrl}`);
-      }
+      const shortUrl = `http://${process.env.NEXT_PUBLIC_APP_DOMAIN}/${slug}`;
+      alert(`Copy failed. Please copy manually: ${shortUrl}`);
     }
   };
 
@@ -173,35 +157,39 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
               <div key={url.id} className="p-6 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
+                    {/* URL Header with slug */}
                     <div className="flex items-center space-x-3 mb-2">
-                      <div className="font-medium text-purple-600">
-                        /{url.slug}
-                      </div>
+                      {editingSlug === url.id ? (
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-gray-500">/</span>
+                          <input
+                            type="text"
+                            value={editSlugValue}
+                            onChange={(e) => setEditSlugValue(e.target.value)}
+                            className="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            disabled={isUpdating}
+                            autoFocus
+                          />
+                        </div>
+                      ) : (
+                        <div className="font-medium text-purple-600">
+                          /{url.slug}
+                        </div>
+                      )}
+                      
                       {url.user && (
                         <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
                           by {url.user.name}
                         </span>
                       )}
                       <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                        {url._count.visits} visits
+                        {url._count?.visits || 0} visits
                       </span>
                     </div>
 
-                    {editingSlug === url.id ? (
-                      <div className="mt-3 space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-500">
-                            {process.env.NEXT_PUBLIC_APP_DOMAIN}/
-                          </span>
-                          <input
-                            type="text"
-                            value={editSlugValue}
-                            onChange={(e) => setEditSlugValue(e.target.value)}
-                            className="flex-1 px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            placeholder="Enter new slug"
-                            disabled={isUpdating}
-                          />
-                        </div>
+                    {/* Edit Controls */}
+                    {editingSlug === url.id && (
+                      <div className="mb-3 space-y-2">
                         {editError && (
                           <p className="text-sm text-red-600">{editError}</p>
                         )}
@@ -209,32 +197,34 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
                           <button
                             onClick={() => handleSaveSlug(url.id)}
                             disabled={isUpdating}
-                            className="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
+                            className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
                           >
                             {isUpdating ? 'Saving...' : 'Save'}
                           </button>
                           <button
                             onClick={handleCancelEdit}
                             disabled={isUpdating}
-                            className="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-400 transition-colors"
+                            className="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hover:bg-gray-400"
                           >
                             Cancel
                           </button>
                         </div>
                       </div>
-                    ) : (
-                      <>
-                        <p className="text-gray-600 text-sm truncate">
-                          {url.originalUrl}
-                        </p>
-                        <p className="text-gray-400 text-xs mt-1">
-                          Created {new Date(url.createdAt).toLocaleDateString()} at{' '}
-                          {new Date(url.createdAt).toLocaleTimeString()}
-                        </p>
-                      </>
                     )}
+
+                    {/* Original URL */}
+                    <p className="text-gray-600 text-sm truncate mb-1">
+                      {url.originalUrl}
+                    </p>
+                    
+                    {/* Created date */}
+                    <p className="text-gray-400 text-xs">
+                      Created {new Date(url.createdAt).toLocaleDateString()} at{' '}
+                      {new Date(url.createdAt).toLocaleTimeString()}
+                    </p>
                   </div>
                   
+                  {/* Action buttons */}
                   <div className="flex items-center space-x-2 ml-4">
                     <button
                       onClick={() => copyToClipboard(url.slug)}
@@ -247,15 +237,15 @@ export default function UrlList({ userOnly = false }: UrlListProps) {
                       {copiedSlug === url.slug ? '✓ Copied!' : '📋 Copy'}
                     </button>
                     
-                    {editingSlug === url.id ? null : (
-                      <button
-                        onClick={() => handleEditSlug(url)}
-                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
-                        title="Edit slug"
-                      >
-                        ✏️ Edit
-                      </button>
-                    )}
+                    <button
+                      onClick={() => {
+                        handleEditSlug(url);
+                      }}
+                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
+                      title="Edit slug"
+                    >
+                      ✏️ Edit
+                    </button>
                     
                     <a
                       href={url.originalUrl}
